@@ -79,20 +79,11 @@ http://127.0.0.1:5000/
 
 ---
 
-## Adding Screenshots to this README
-
-To include screenshots or images in this README, use the following Markdown syntax:
-
 ```markdown
-![Descriptive Alt Text](relative/path/to/image.png)
+![Color Shades Generator Homepage]([relative/path/to/image.png](https://github.com/Akshita3104/Hex-Code-Generator/blob/main/screenshots/Screenshot%202025-04-26%20191907.png))
 ```
-
-### Example
-
-If you save a screenshot inside a folder named `screenshots` in your project directory, add it like this:
-
 ```markdown
-![Color Shades Generator Homepage](screenshots/homepage.png)
+![Color and Shades ]([screenshots/homepage.png](https://github.com/Akshita3104/Hex-Code-Generator/blob/main/screenshots/Screenshot%202025-04-26%20191947.png))
 ```
 
 ### Tips
