@@ -79,12 +79,12 @@ http://127.0.0.1:5000/
 
 ---
 
-```markdown
-![Color Shades Generator Homepage]([relative/path/to/image.png](https://github.com/Akshita3104/Hex-Code-Generator/blob/main/screenshots/Screenshot%202025-04-26%20191907.png))
-```
-```markdown
-![Color and Shades ]([screenshots/homepage.png](https://github.com/Akshita3104/Hex-Code-Generator/blob/main/screenshots/Screenshot%202025-04-26%20191947.png))
-```
+### Screenshots
+
+![Color Shades Generator Homepage](https://github.com/Akshita3104/Hex-Code-Generator/blob/main/screenshots/Screenshot%202025-04-26%20191907.png)
+
+![Color and Shades](https://github.com/Akshita3104/Hex-Code-Generator/blob/main/screenshots/Screenshot%202025-04-26%20191947.png)
+
 
 ### Tips
 
