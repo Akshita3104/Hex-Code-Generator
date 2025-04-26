@@ -2,7 +2,6 @@
 
 [![Python](https://img.shields.io/badge/python-3.x-blue)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/flask-1.1.2-green)](https://flask.palletsprojects.com/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
