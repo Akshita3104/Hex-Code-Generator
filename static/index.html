@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Shades Generator</title>
+  <style>
+    :root {
+      --primary-50: #eff6ff;
+      --primary-100: #dbeafe;
+      --primary-200: #bfdbfe;
+      --primary-300: #93c5fd;
+      --primary-400: #60a5fa;
+      --primary-500: #3b82f6;
+      --primary-600: #2563eb;
+      --primary-700: #1d4ed8;
+      --primary-800: #1e40af;
+      --primary-900: #1e3a8a;
+      
+      --neutral-50: #f8fafc;
+      --neutral-100: #f1f5f9;
+      --neutral-200: #e2e8f0;
+      --neutral-300: #cbd5e1;
+      --neutral-400: #94a3b8;
+      --neutral-500: #64748b;
+      --neutral-600: #475569;
+      --neutral-700: #334155;
+      --neutral-800: #1e293b;
+      --neutral-900: #0f172a;
+      
+      --success-500: #10b981;
+      --warning-500: #f59e0b;
+      --error-500: #ef4444;
+      
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --glass-blur: 12px;
+      
+      --spacing-1: 4px;
+      --spacing-2: 8px;
+      --spacing-3: 12px;
+      --spacing-4: 16px;
+      --spacing-5: 20px;
+      --spacing-6: 24px;
+      --spacing-8: 32px;
+      --spacing-10: 40px;
+      --spacing-12: 48px;
+      
+      --grad-start: #1a202c;
+      --grad-mid: #2d3748;
+      --grad-end: #2c5282;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      color: var(--neutral-100);
+      background: linear-gradient(135deg, var(--grad-start), var(--grad-mid), var(--grad-end));
+      background-attachment: fixed;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--spacing-6);
+    }
+
+    header {
+      text-align: center;
+      padding: var(--spacing-8) 0;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      margin-bottom: var(--spacing-2);
+      background: linear-gradient(90deg, #93c5fd, #ffffff, #93c5fd);
+      background-size: 200% auto;
+      animation: shimmer 3s linear infinite;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--neutral-300);
+      font-weight: 400;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-8);
+    }
+
+    .input-container {
+      display: flex;
+      gap: var(--spacing-4);
+      margin-bottom: var(--spacing-6);
+      width: 100%;
+    }
+
+    .color-input-wrapper {
+      position: relative;
+      flex: 1;
+    }
+
+    .color-preview {
+      position: absolute;
+      top: 50%;
+      right: var(--spacing-4);
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      border-radius: var(--radius-full);
+      border: 2px solid var(--glass-border);
+      background-color: transparent;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: var(--spacing-4) var(--spacing-6);
+      font-size: 1rem;
+      border: none;
+      border-radius: var(--radius-full);
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      color: var(--neutral-100);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--glass-border);
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--primary-300);
+    }
+
+    .generate-btn {
+      padding: var(--spacing-4) var(--spacing-6);
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      border-radius: var(--radius-full);
+      background: var(--primary-600);
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+      box-shadow: var(--shadow-md);
+    }
+
+    .generate-btn:hover {
+      background: var(--primary-500);
+      transform: translateY(-2px);
+    }
+
+    .generate-btn:active {
+      transform: translateY(0);
+    }
+
+    .generate-btn:focus {
+      animation: pulse 0.6s ease;
+    }
+
+    .options-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-6);
+    }
+
+    .toggle-group {
+      display: flex;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border-radius: var(--radius-full);
+      padding: var(--spacing-1);
+      border: 1px solid var(--glass-border);
+    }
+
+    .toggle-btn {
+      padding: var(--spacing-2) var(--spacing-4);
+      border: none;
+      background: transparent;
+      color: var(--neutral-300);
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .toggle-btn.active {
+      background: var(--primary-600);
+      color: white;
+    }
+
+    .count-selector {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      color: var(--neutral-300);
+      font-size: 0.9rem;
+    }
+
+    select {
+      padding: var(--spacing-2) var(--spacing-3);
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm);
+      color: var(--neutral-100);
+      font-size: 0.9rem;
+      appearance: none;
+      padding-right: 1.5rem;
+    }
+
+    .results-container {
+      flex: 1;
+      margin-bottom: var(--spacing-8);
+    }
+
+    .shade-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: var(--spacing-4);
+      max-width: 100%;
+    }
+
+    .shade-cell {
+      aspect-ratio: 1 / 1;
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.875rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
+      position: relative;
+      animation: fadeInUp 0.5s ease forwards;
+      opacity: 0;
+    }
+
+    .shade-cell:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .shade-cell .color-code {
+      font-weight: 600;
+      margin-bottom: var(--spacing-2);
+    }
+
+    .shade-cell .color-info {
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
+    .shade-cell::before {
+      content: "Click to Copy";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      font-weight: 500;
+    }
+
+    .shade-cell:hover::before {
+      opacity: 1;
+    }
+
+    .no-results {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 200px;
+      color: var(--neutral-400);
+      font-size: 1.1rem;
+      text-align: center;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border-radius: var(--radius-md);
+      border: 1px solid var(--glass-border);
+    }
+
+    .history-container {
+      margin-top: var(--spacing-8);
+    }
+
+    .history-container h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: var(--spacing-4);
+      color: var(--neutral-200);
+    }
+
+    .color-history {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-3);
+    }
+
+    .history-item {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease;
+      border: 2px solid var(--neutral-200);
+      animation: fadeInDown 0.3s ease forwards;
+      opacity: 0;
+    }
+
+    .history-item:hover {
+      transform: scale(1.1);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--neutral-800);
+      color: white;
+      padding: var(--spacing-3) var(--spacing-5);
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      box-shadow: var(--shadow-lg);
+      pointer-events: none;
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    footer {
+      text-align: center;
+      padding: var(--spacing-6) 0;
+      color: var(--neutral-400);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 640px) {
+      .app-container {
+        padding: var(--spacing-4);
+      }
+      
+      h1 {
+        font-size: 1.75rem;
+      }
+      
+      .subtitle {
+        font-size: 0.95rem;
+      }
+      
+      .input-container {
+        flex-direction: column;
+      }
+      
+      .options-container {
+        flex-direction: column;
+        gap: var(--spacing-4);
+        align-items: flex-start;
+      }
+      
+      .shade-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .history-item {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    @media (min-width: 641px) and (max-width: 1024px) {
+      .app-container {
+        padding: var(--spacing-6);
+      }
+      
+      h1 {
+        font-size: 2.2rem;
+      }
+      
+      .shade-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    @media (min-width: 1025px) {
+      .app-container {
+        padding: var(--spacing-8);
+      }
+      
+      .shade-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      }
+      
+      .input-container {
+        max-width: 800px;
+        margin: 0 auto;
+        margin-bottom: var(--spacing-8);
+      }
+      
+      .options-container {
+        max-width: 800px;
+        margin: 0 auto;
+        margin-bottom: var(--spacing-8);
+      }
+    }
+
+    @media (min-width: 1600px) {
+      .app-container {
+        max-width: 1400px;
+      }
+      
+      .shade-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --glass-bg: rgba(0, 0, 0, 0.2);
+        --glass-border: rgba(255, 255, 255, 0.1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <h1>Color Shades Generator</h1>
+      <p class="subtitle">Generate beautiful color palettes with a click</p>
+    </header>
+
+    <main>
+      <div class="input-container">
+        <div class="color-input-wrapper">
+          <input type="text" id="colorInput" placeholder="Enter color name or hex (e.g. #3498db, blue)" autocomplete="off">
+          <div id="colorPreview" class="color-preview"></div>
+        </div>
+        <button id="generateBtn" class="generate-btn">Generate Shades</button>
+      </div>
+
+      <div class="options-container">
+        <div class="toggle-group">
+          <button class="toggle-btn active" data-mode="shades">Shades</button>
+          <button class="toggle-btn" data-mode="tints">Tints</button>
+          <button class="toggle-btn" data-mode="both">Both</button>
+        </div>
+        <div class="count-selector">
+          <label for="shadeCount">Count:</label>
+          <select id="shadeCount">
+            <option value="4">4</option>
+            <option value="8" selected>8</option>
+            <option value="12">12</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="results-container">
+        <div id="shadeGrid" class="shade-grid"></div>
+        <div class="no-results" id="noResults">
+          Enter a color to generate shades
+        </div>
+      </div>
+
+      <div class="history-container">
+        <h2>Recent Colors</h2>
+        <div id="colorHistory" class="color-history"></div>
+      </div>
+    </main>
+
+    <footer>
+      <p>Click on any color to copy its hex code</p>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast">Color copied to clipboard!</div>
+
+  <script>
+    // App State
+    const state = {
+      currentColor: '',
+      mode: 'shades',
+      count: 8,
+      colorHistory: (() => {
+        try {
+          const history = localStorage.getItem('colorHistory');
+          return history ? JSON.parse(history) : [];
+        } catch {
+          return [];
+        }
+      })()
+    };
+
+    // DOM Elements
+    const colorInput = document.getElementById('colorInput');
+    const colorPreview = document.getElementById('colorPreview');
+    const generateBtn = document.getElementById('generateBtn');
+    const shadeGrid = document.getElementById('shadeGrid');
+    const noResults = document.getElementById('noResults');
+    const colorHistory = document.getElementById('colorHistory');
+    const toggleButtons = document.querySelectorAll('.toggle-btn');
+    const shadeCount = document.getElementById('shadeCount');
+
+    // Utility Functions
+    function showToast(message, duration = 2000) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), duration);
+    }
+
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast(`${text} copied to clipboard!`);
+        return true;
+      } catch (err) {
+        console.error('Failed to copy:', err);
+        showToast('Failed to copy to clipboard');
+        return false;
+      }
+    }
+
+    function debounce(func, wait = 300) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    function isValidColor(color) {
+      const tempElement = document.createElement('div');
+      tempElement.style.color = color;
+      return tempElement.style.color !== '';
+    }
+
+    function isLightColor(hexColor) {
+      const hex = hexColor.replace('#', '');
+      const r = parseInt(hex.substr(0, 2), 16);
+      const g = parseInt(hex.substr(2, 2), 16);
+      const b = parseInt(hex.substr(4, 2), 16);
+      const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+      return brightness > 155;
+    }
+
+    function hexToRgb(hex) {
+      hex = hex.replace(/^#/, '');
+      let r, g, b;
+      if (hex.length === 3) {
+        r = parseInt(hex.charAt(0) + hex.charAt(0), 16);
+        g = parseInt(hex.charAt(1) + hex.charAt(1), 16);
+        b = parseInt(hex.charAt(2) + hex.charAt(2), 16);
+      } else {
+        r = parseInt(hex.substr(0, 2), 16);
+        g = parseInt(hex.substr(2, 2), 16);
+        b = parseInt(hex.substr(4, 2), 16);
+      }
+      return { r, g, b };
+    }
+
+    function rgbToHex(r, g, b) {
+      return '#' + [r, g, b]
+        .map(x => {
+          const hex = x.toString(16);
+          return hex.length === 1 ? '0' + hex : hex;
+        })
+        .join('');
+    }
+
+    function formatRgb(r, g, b) {
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    function generateShades(hexColor, count = 8) {
+      const { r, g, b } = hexToRgb(hexColor);
+      const shades = [{
+        hex: hexColor,
+        rgb: formatRgb(r, g, b)
+      }];
+      
+      for (let i = 1; i < count; i++) {
+        const factor = 1 - (i / count);
+        const newR = Math.round(r * factor);
+        const newG = Math.round(g * factor);
+        const newB = Math.round(b * factor);
+        
+        shades.push({
+          hex: rgbToHex(newR, newG, newB),
+          rgb: formatRgb(newR, newG, newB)
+        });
+      }
+      
+      return shades;
+    }
+
+    function generateTints(hexColor, count = 8) {
+      const { r, g, b } = hexToRgb(hexColor);
+      const tints = [{
+        hex: hexColor,
+        rgb: formatRgb(r, g, b)
+      }];
+      
+      for (let i = 1; i < count; i++) {
+        const factor = i / count;
+        const newR = Math.round(r + (255 - r) * factor);
+        const newG = Math.round(g + (255 - g) * factor);
+        const newB = Math.round(b + (255 - b) * factor);
+        
+        tints.push({
+          hex: rgbToHex(newR, newG, newB),
+          rgb: formatRgb(newR, newG, newB)
+        });
+      }
+      
+      return tints;
+    }
+
+    function generateBoth(hexColor, count = 8) {
+      const halfCount = Math.ceil(count / 2);
+      const shades = generateShades(hexColor, halfCount);
+      const tints = generateTints(hexColor, halfCount);
+      tints.shift();
+      return [...shades, ...tints];
+    }
+
+    async function normalizeColorInput(colorInput) {
+      if (/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(colorInput)) {
+        return colorInput;
+      }
+      
+      if (/^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(colorInput)) {
+        return `#${colorInput}`;
+      }
+      
+      if (isValidColor(colorInput)) {
+        const tempElement = document.createElement('div');
+        tempElement.style.color = colorInput;
+        document.body.appendChild(tempElement);
+        const computedColor = getComputedStyle(tempElement).color;
+        document.body.removeChild(tempElement);
+        
+        const rgbMatch = computedColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+        if (rgbMatch) {
+          const r = parseInt(rgbMatch[1]);
+          const g = parseInt(rgbMatch[2]);
+          const b = parseInt(rgbMatch[3]);
+          return rgbToHex(r, g, b);
+        }
+      }
+      
+      return null;
+    }
+
+    // Event Handlers
+    const handleColorInput = debounce(async () => {
+      const value = colorInput.value.trim();
+      
+      if (!value) {
+        colorPreview.style.backgroundColor = 'transparent';
+        return;
+      }
+      
+      try {
+        const normalizedColor = await normalizeColorInput(value);
+        if (normalizedColor) {
+          colorPreview.style.backgroundColor = normalizedColor;
+          state.currentColor = normalizedColor;
+        } else {
+          colorPreview.style.backgroundColor = 'transparent';
+        }
+      } catch (error) {
+        console.error('Error normalizing color:', error);
+        colorPreview.style.backgroundColor = 'transparent';
+      }
+    }, 300);
+
+    async function generateColors() {
+      if (!state.currentColor) {
+        const normalizedColor = await normalizeColorInput(colorInput.value.trim());
+        if (!normalizedColor) {
+          showToast('Please enter a valid color');
+          return;
+        }
+        state.currentColor = normalizedColor;
+      }
+      
+      shadeGrid.innerHTML = '';
+      
+      let colorVariants;
+      switch (state.mode) {
+        case 'shades':
+          colorVariants = generateShades(state.currentColor, state.count);
+          break;
+        case 'tints':
+          colorVariants = generateTints(state.currentColor, state.count);
+          break;
+        case 'both':
+          colorVariants = generateBoth(state.currentColor, state.count);
+          break;
+        default:
+          colorVariants = generateShades(state.currentColor, state.count);
+      }
+      
+      noResults.style.display = 'none';
+      
+      colorVariants.forEach((color, index) => {
+        const cell = document.createElement('div');
+        cell.className = 'shade-cell';
+        cell.style.backgroundColor = color.hex;
+        cell.style.setProperty('--index', index);
+        
+        const textColor = isLightColor(color.hex) ? '#000' : '#fff';
+        cell.style.color = textColor;
+        
+        const hexCode = document.createElement('div');
+        hexCode.className = 'color-code';
+        hexCode.textContent = color.hex;
+        
+        const rgbInfo = document.createElement('div');
+        rgbInfo.className = 'color-info';
+        rgbInfo.textContent = color.rgb;
+        
+        cell.appendChild(hexCode);
+        cell.appendChild(rgbInfo);
+        
+        cell.addEventListener('click', () => {
+          copyToClipboard(color.hex);
+        });
+        
+        shadeGrid.appendChild(cell);
+      });
+      
+      if (!state.colorHistory.includes(state.currentColor)) {
+        state.colorHistory.unshift(state.currentColor);
+        if (state.colorHistory.length > 10) {
+          state.colorHistory.pop();
+        }
+        localStorage.setItem('colorHistory', JSON.stringify(state.colorHistory));
+        renderColorHistory();
+      }
+    }
+
+    function renderColorHistory() {
+      colorHistory.innerHTML = '';
+      
+      state.colorHistory.forEach((color, index) => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        historyItem.style.backgroundColor = color;
+        historyItem.style.setProperty('--index', index);
+        
+        historyItem.addEventListener('click', () => {
+          colorInput.value = color;
+          state.currentColor = color;
+          colorPreview.style.backgroundColor = color;
+          generateColors();
+        });
+        
+        colorHistory.appendChild(historyItem);
+      });
+    }
+
+    // Initialize
+    function init() {
+      colorInput.addEventListener('input', handleColorInput);
+      generateBtn.addEventListener('click', generateColors);
+      
+      toggleButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          toggleButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          state.mode = btn.dataset.mode;
+          
+          if (state.currentColor) {
+            generateColors();
+          }
+        });
+      });
+      
+      shadeCount.addEventListener('change', () => {
+        state.count = parseInt(shadeCount.value);
+        if (state.currentColor) {
+          generateColors();
+        }
+      });
+      
+      shadeCount.value = state.count;
+      renderColorHistory();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
